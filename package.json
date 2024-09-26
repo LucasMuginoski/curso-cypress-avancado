@@ -1,0 +1,30 @@
+{
+  "name": "curso-avancado",
+  "version": "1.0.0",
+  "description": "Projeto do curso avançado de Cypress da Escola TAT",
+  "main": "index.js",
+  "scripts": {
+    "lint": "npx standard",
+    "lint:fix": "npx standard --fix",
+    "test": "cypress run",
+    "cy:open": "cypress open"
+  },
+  "standard": {
+    "globals": [
+      "beforeEach",
+      "context",
+      "cy",
+      "Cypress",
+      "describe",
+      "it"
+    ]
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^9.0.2",
+    "cypress": "^13.15.0",
+    "cypress-localstorage-commands": "^2.2.6",
+    "standard": "^17.1.2"
+  }
+}
