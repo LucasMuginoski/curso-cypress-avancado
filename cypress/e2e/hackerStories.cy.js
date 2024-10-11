@@ -111,12 +111,15 @@ describe('Hacker stories', () => {
             cy.get(`button:contains(${initialTerm})`)
                 .should('be.visible')
         })
-        
+        //esse teste 'types and submits the form directly' não é e2e pois não é algo que o usuário pode fazer. 
         it.skip('types and submits the form directly', ()=>{
             cy.get('form input[type="text"]').should('be.visible')
-                .clear().type('cypress')
-            cy.get('form').click()
+                .clear().type(newTerm)
+            cy.get('form').submit()
             
+            cy.wait('@getNewTermStories')
+            cy.get('.item').should('have.length', 20)
+
         })
     })
 
