@@ -61,11 +61,34 @@ describe('Hacker stories', () => {
         it('orders by points', () => {})
     })
 
-    context.skip('Errors', ()=> {
+    context('Errors', ()=> {
+        /*  Podemos usar o comando cy.intercept para simular falhas na rede/servidor. 
+            Passando atributos como { statusCode: 500 } ou  { forceNetworkError: true } dentro do intercept
+        */
+        it('shows "Something went wrong ..." in case of a server error', () => {
 
-        it('shows "Something went wrong ..." in case of a server error', () => {})
-
-        it('shows "Something went wrong ..." in case of a network error', () => {})
+            cy.intercept(
+                'GET',
+                '**/search**',
+                { statusCode: 500 }
+            ).as('getInternalServerError')
+            cy.visit('/')
+            cy.wait('@getInternalServerError')
+            cy.get('p:contains(Something went wrong ...)').should('be.visible')
+        })
+        
+        it('shows "Something went wrong ..." in case of a network error', () => {
+            // Cypress está abortando a requisição HTTP para simular o erro de rede.
+            cy.intercept(
+                'GET',
+                '**/search**',
+                { forceNetworkError: true }
+            ).as('getNetworkError')
+            cy.visit('/')
+      
+            cy.wait('@getNetworkError')
+            cy.get('p:contains(Something went wrong ...)').should('be.visible')
+        })
     })
     
     context('Search', ()=>{
