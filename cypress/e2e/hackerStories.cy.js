@@ -73,7 +73,9 @@ describe('Hacker stories', () => {
       })
 
       context('List of stories', () => {
-        it.skip('shows the right data for all rendered stories', () => {
+        it.only('shows the right data for all rendered stories', () => {
+
+
 
         })
 
@@ -122,7 +124,7 @@ describe('Hacker stories', () => {
 
         cy.wait('@getStories')
 
-        cy.get('.item').should('have.length', 2)
+        cy.get('.item').should('have.length', 22)
         cy.get(`button:contains(${initialTerm})`)
           .should('be.visible')
       })
@@ -135,7 +137,7 @@ describe('Hacker stories', () => {
 
         cy.wait('@getStories')
 
-        cy.get('.item').should('have.length', 2)
+        cy.get('.item').should('have.length', 22)
         cy.get(`button:contains(${initialTerm})`)
           .should('be.visible')
       })
@@ -164,7 +166,7 @@ describe('Hacker stories', () => {
         cy.get('#search').clear()
       })
 
-      it.only('shows a max of 5 buttons for the last searched terms', () => {
+      it('shows a max of 5 buttons for the last searched terms', () => {
         const faker = require('faker')
           cy.intercept(
             'GET',
