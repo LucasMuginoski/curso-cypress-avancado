@@ -73,10 +73,22 @@ describe('Hacker stories', () => {
       })
 
       context('List of stories', () => {
-        it.only('shows the right data for all rendered stories', () => {
+        it('shows the right data for all rendered stories', () => {
+          const stories = require('../fixtures/stories.json')
+          
+          cy.get('.item').first().should('contain', stories.hits[0].title)
+            .and('contain', stories.hits[0].author)
+            .and('contain', stories.hits[0].num_comments)
+            .and('contain', stories.hits[0].points)
 
+          cy.get(`.item a:contains(${stories.hits[0].title})`).should('have.attr', 'href',`${stories.hits[0].url}`)
 
+          cy.get('.item').last().should('contain', stories.hits[1].title)
+            .and('contain', stories.hits[1].author)
+            .and('contain', stories.hits[1].num_comments)
+            .and('contain', stories.hits[1].points)
 
+            cy.get(`.item a:contains(${stories.hits[1].title})`).should('have.attr', 'href',`${stories.hits[1].url}`)
         })
 
         it('shows one less story after dismissing the first one', () => {
