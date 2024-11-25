@@ -156,19 +156,26 @@ describe('Hacker stories', () => {
       beforeEach(() => {
         cy.intercept(
           'GET',
-            `**/search?query=${initialTerm}&page=0`,
+          `**/search?query=${initialTerm}&page=0`,
+          { fixture: 'empty' }
         ).as('getEmptyStories')
 
         cy.intercept(
           'GET',
-              `**/search?query=${newTerm}&page=0`,
-              { fixture: 'stories' }
+          `**/search?query=${newTerm}&page=0`,
+          { fixture: 'stories' }
         ).as('getStories')
 
         cy.visit('/')
         cy.wait('@getEmptyStories')
 
-        cy.get('#search').clear()
+        cy.get('#search')
+          .should('be.visible')
+          .clear()
+      })
+
+      it('shows no story when none is returned', () => {
+        cy.get('.item').should('not.exist')
       })
 
       it('types and hits ENTER', () => {
@@ -176,7 +183,7 @@ describe('Hacker stories', () => {
 
         cy.wait('@getStories')
 
-        cy.get('.item').should('have.length', 22)
+        cy.get('.item').should('have.length', 2)
         cy.get(`button:contains(${initialTerm})`)
           .should('be.visible')
       })
@@ -189,7 +196,7 @@ describe('Hacker stories', () => {
 
         cy.wait('@getStories')
 
-        cy.get('.item').should('have.length', 22)
+        cy.get('.item').should('have.length', 2)
         cy.get(`button:contains(${initialTerm})`)
           .should('be.visible')
       })
@@ -217,6 +224,8 @@ describe('Hacker stories', () => {
 
         cy.get('#search').clear()
       })
+
+
 
       it('shows a max of 5 buttons for the last searched terms', () => {
         const faker = require('faker')
