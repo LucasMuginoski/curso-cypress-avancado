@@ -73,9 +73,9 @@ describe('Hacker stories', () => {
       })
 
       context('List of stories', () => {
+        const stories = require('../fixtures/stories.json')
+
         it('shows the right data for all rendered stories', () => {
-          const stories = require('../fixtures/stories.json')
-          
           cy.get('.item').first().should('contain', stories.hits[0].title)
             .and('contain', stories.hits[0].author)
             .and('contain', stories.hits[0].num_comments)
@@ -98,17 +98,57 @@ describe('Hacker stories', () => {
 
           cy.get('.item').should('have.length', 1)
         })
+
+        
+        context('Order by', () => {
+          it('orders by title', () => {
+            //stories está no contexto de list of stories, então como o contexto order by está dentro de stories ele tem acesso e não precisa redefinir nesse contexto
+            cy.get('.list-header-button:contains(Title)')
+              .as('titleHeader').click()
+            cy.get(`.item a:contains(${stories.hits[0].title})`)
+              .should('have.attr', 'href',`${stories.hits[0].url}`)
+            cy.get('.item').first().should('be.visible').and('contain', stories.hits[0].title)
+            
+            cy.get('@titleHeader').click()
+            cy.get('.item').first().should('be.visible').and('contain', stories.hits[1].title)
+            cy.get(`.item a:contains(${stories.hits[1].title})`)
+              .should('have.attr', 'href',`${stories.hits[1].url}`)
+          })
+
+          it('orders by author', () => {
+            cy.get('.list-header-button:contains(Author)')
+              .as('authorHeader').click()
+
+            cy.get('.item').first().should('be.visible').and('contain', stories.hits[0].author)
+          
+            cy.get('@authorHeader').click()
+            cy.get('.item').first().should('be.visible').and('contain', stories.hits[1].author)
+
+          })
+
+          it('orders by comments', () => {
+            cy.get('.list-header-button:contains(Comments)')
+            .as('commentsHeader').click()
+
+            cy.get('.item').first().should('be.visible').and('contain', stories.hits[1].num_comments)
+        
+            cy.get('@commentsHeader').click()
+            cy.get('.item').first().should('be.visible').and('contain', stories.hits[0].num_comments)
+          })
+
+          it('orders by points', () => {
+            cy.get('.list-header-button:contains(Points)')
+            .as('pointsHeader').click()
+
+            cy.get('.item').first().should('be.visible').and('contain', stories.hits[1].points)
+        
+            cy.get('@pointsHeader').click()
+            cy.get('.item').first().should('be.visible').and('contain', stories.hits[0].points)
+          })
+        })
+
       })
 
-      context.skip('Order by', () => {
-        it('orders by title', () => {})
-
-        it('orders by author', () => {})
-
-        it('orders by comments', () => {})
-
-        it('orders by points', () => {})
-      })
     })
 
     context('Search', () => {
