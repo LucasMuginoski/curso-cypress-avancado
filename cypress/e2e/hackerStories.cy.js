@@ -56,6 +56,25 @@ describe('Hacker stories', () => {
   })
 
   context('Mocking the API', () => {
+
+    it('shows a "Loading ..." state before showing the results', () => {
+      cy.intercept(
+        'GET',
+        '**/search**',
+        {
+          delay: 1000,
+          fixture: 'stories'
+        }
+      ).as('getDelayedStories')
+      
+      cy.visit('/')
+    
+      cy.assertLoadingIsShownAndHidden()
+      cy.wait('@getDelayedStories')
+    
+      cy.get('.item').should('have.length', 2)
+    })
+
     context('Footer and list of stories', () => {
       beforeEach(() => {
         // Intercept como objeto e contendo a query com suas propriedades.
@@ -206,7 +225,7 @@ describe('Hacker stories', () => {
           .should('be.visible')
       })
       // esse teste 'types and submits the form directly' não é e2e pois não é algo que o usuário pode fazer.
-      it.skip('types and submits the form directly', () => {
+      it.skip('types and submits the form directly - ignored', () => {
         cy.get('form input[type="text"]').should('be.visible')
           .clear().type(newTerm)
         cy.get('form').submit()
@@ -283,3 +302,4 @@ describe('Hacker stories', () => {
     })
   })
 })
+
