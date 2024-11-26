@@ -15,6 +15,7 @@ describe('Hacker stories', () => {
       cy.visit('/')
       cy.wait('@getStories')
     })
+
     it('shows 20 stories, then the next 20 after clicking "More"', () => {
       cy.intercept({
         method: 'GET',
@@ -29,6 +30,7 @@ describe('Hacker stories', () => {
       cy.wait('@getNextStories')
       cy.get('.item').should('have.length', 40)
     })
+
     it('searches via the last searched term', () => {
       cy.intercept(
         'GET',
@@ -183,6 +185,8 @@ describe('Hacker stories', () => {
 
         cy.wait('@getStories')
 
+        cy.getLocalStorage('search').should('be.equal', newTerm)
+
         cy.get('.item').should('have.length', 2)
         cy.get(`button:contains(${initialTerm})`)
           .should('be.visible')
@@ -195,6 +199,7 @@ describe('Hacker stories', () => {
           .click()
 
         cy.wait('@getStories')
+        cy.getLocalStorage('search').should('be.equal', newTerm)
 
         cy.get('.item').should('have.length', 2)
         cy.get(`button:contains(${initialTerm})`)
@@ -227,7 +232,7 @@ describe('Hacker stories', () => {
 
 
 
-      it.only('shows a max of 5 buttons for the last searched terms', () => {
+      it('shows a max of 5 buttons for the last searched terms', () => {
         const faker = require('faker')
           cy.intercept(
             'GET',
