@@ -25,7 +25,7 @@ describe('Hacker stories', () => {
         }
       }).as('getNextStories')
       cy.get('.item').should('have.length', 20)
-      cy.contains('More').click()
+      cy.contains('More').should('be.visible').click()
       cy.wait('@getNextStories')
       cy.get('.item').should('have.length', 40)
     })
@@ -76,14 +76,14 @@ describe('Hacker stories', () => {
         const stories = require('../fixtures/stories.json')
 
         it('shows the right data for all rendered stories', () => {
-          cy.get('.item').first().should('contain', stories.hits[0].title)
+          cy.get('.item').first().should('be.visible').and('contain', stories.hits[0].title)
             .and('contain', stories.hits[0].author)
             .and('contain', stories.hits[0].num_comments)
             .and('contain', stories.hits[0].points)
 
           cy.get(`.item a:contains(${stories.hits[0].title})`).should('have.attr', 'href',`${stories.hits[0].url}`)
 
-          cy.get('.item').last().should('contain', stories.hits[1].title)
+          cy.get('.item').last().should('be.visible').and('contain', stories.hits[1].title)
             .and('contain', stories.hits[1].author)
             .and('contain', stories.hits[1].num_comments)
             .and('contain', stories.hits[1].points)
@@ -93,7 +93,7 @@ describe('Hacker stories', () => {
 
         it('shows one less story after dismissing the first one', () => {
           cy.get('.button-small')
-            .first()
+            .first().should('be.visible')
             .click()
 
           cy.get('.item').should('have.length', 1)
@@ -104,7 +104,7 @@ describe('Hacker stories', () => {
           it('orders by title', () => {
             //stories está no contexto de list of stories, então como o contexto order by está dentro de stories ele tem acesso e não precisa redefinir nesse contexto
             cy.get('.list-header-button:contains(Title)')
-              .as('titleHeader').click()
+              .as('titleHeader').should('be.visible').click()
             cy.get(`.item a:contains(${stories.hits[0].title})`)
               .should('have.attr', 'href',`${stories.hits[0].url}`)
             cy.get('.item').first().should('be.visible').and('contain', stories.hits[0].title)
@@ -117,7 +117,7 @@ describe('Hacker stories', () => {
 
           it('orders by author', () => {
             cy.get('.list-header-button:contains(Author)')
-              .as('authorHeader').click()
+              .as('authorHeader').should('be.visible').click()
 
             cy.get('.item').first().should('be.visible').and('contain', stories.hits[0].author)
           
@@ -128,7 +128,7 @@ describe('Hacker stories', () => {
 
           it('orders by comments', () => {
             cy.get('.list-header-button:contains(Comments)')
-            .as('commentsHeader').click()
+            .as('commentsHeader').should('be.visible').click()
 
             cy.get('.item').first().should('be.visible').and('contain', stories.hits[1].num_comments)
         
@@ -227,7 +227,7 @@ describe('Hacker stories', () => {
 
 
 
-      it('shows a max of 5 buttons for the last searched terms', () => {
+      it.only('shows a max of 5 buttons for the last searched terms', () => {
         const faker = require('faker')
           cy.intercept(
             'GET',
@@ -240,8 +240,11 @@ describe('Hacker stories', () => {
             cy.get('#search').clear().type(`${randomWord} {enter}`)
             cy.wait('@getRandomStories')
           })
+          //Para seletores longos podemos usar o .within
+          cy.get('.last-searches').within(()=> {
+            cy.get('button').should('have.length', 5)
+          })
 
-          cy.get('.last-searches button').should('have.length', 5)
       })
     })
   })
